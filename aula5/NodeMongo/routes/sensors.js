@@ -3,6 +3,7 @@ var router = express.Router();
 var axios = require('axios');
 let SensorSchema = require ('../controller/sensor')
 
+
 router.get("/", (req, res) => {
     res.json({
         rota: "sensores"
@@ -35,7 +36,6 @@ router.get("/acedehpeixoto/:id", (req, res) => {
     })
 
 })
-
 
 
 module.exports = router;
