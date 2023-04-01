@@ -1,16 +1,18 @@
-let ClinicalInfoSchema = require('../model/clincalinfo');
+const { model } = require('mongoose')
+let ClinicalInfoSchema = require('../model/clinicalinfo');
 
-module.exports.newClinicalInfo = async(clinicalInfoID,admDate,bed,bodyTemp,bpm,sato2,bloodPress) => {
+module.exports.newClinicalInfo = async(clinicalInfoID, admDate, bed, bodyTemp, bpm, sato2, bloodPress, timestamp) => {
     try{
-        let bloodPressureObject = {systolic:systolic, diastolic: diastolic};
+        let bloodPressureObject = {systolic, diastolic};
         let newClinicalInfo = new ClinicalInfoSchema({
-            clinicalInfoID: clinicalInfoID,
-            admDate: admDate,
-            bed: bed,
+            clinicalInfoID,
+            admDate,
+            bed,
             bodyTemp,
             bpm,
             sato2,
-            bloodPress:bloodPressureObject})
+            bloodPressureObject,
+            timestamp})
         let newClinicalInfoResponse = await newClinicalInfo.save();
         console.log(response)
         return {success: true, response: newClinicalInfoResponse};

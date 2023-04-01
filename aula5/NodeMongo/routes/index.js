@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
 var axios = require('axios');
-let SensorSchema = require ('../controller/sensor')
-let CaretakerSchema = require('../controller/caretaker')
-let PatientSchema = require('../controller/patient')
-let ClinicalInfoSchema = require('../controller/clinicalinfo')
-let ServiceSchema = require('../controller/service')
+var SensorController = require ('../controller/sensor')
+var CaretakerController = require('../controller/caretaker')
+var PatientController = require('../controller/patient')
+var ClinicalInfoController = require('../controller/clinicalinfo')
+var ServiceController = require('../controller/service')
 
 router.get("/", (req, res) => {
   res.json({
@@ -19,13 +19,59 @@ router.get("/acedehpeixoto/:id", (req, res) => {
   )
   .then(async response => {
       const {sensorid, sensornum, type_of_sensor} = response.data;
-      let newSensorResponse = await SensorSchema.newSensor(sensorid, sensornum, type_of_sensor)
+      var response_sensor;
+      let newSensorResponse = await SensorController.newSensor(sensorid, sensornum, type_of_sensor)
       if (newSensorResponse.success){
-          res.status(200).json({info:"Novo sensor adicionado com sucesso"})
+          response_sensor = "Novo sensor adicionado com sucesso"
       } else {
-          res.status(200).json({info:"Erro ao adicionar novo sensor"})
+          response_sensor = "Erro ao adicionar novo sensor"
       }
-      res.json(response.data);
+      
+
+      const {patientid, patientname, patientage} = response.data;
+      var response_patient;
+      let newPatientResponse = await PatientController.newPatient(patientid, patientname, patientage)
+      if (newPatientResponse.success){
+          response_patient = "Novo paciente adicionado com sucesso"
+      } else {
+          response_patient = "Erro ao adicionar novo paciente"
+      }
+      
+
+      const {serviceCod, serviceDesc} = response.data;
+      var response_service;
+      let newServiceResponse = await ServiceController.newService(serviceCod, serviceDesc)
+      if (newServiceResponse.success){
+          response_service = "Novo servico adicionado com sucesso"
+      } else {
+          response_service = "Erro ao adicionar novo serviço"
+      }
+     
+
+      const {caretakerid, caretakername} = response.data;
+      var response_caretaker;
+      let newCaretakerResponse = await CaretakerController.newCaretaker(caretakerid, caretakername)
+      if (newCaretakerResponse.success){
+          response_caretaker = "Novo caretaker adicionado"
+      } else {
+          response_caretaker = "Erro ao adicionar novo caretaker"
+      }
+      
+      const {clinicalInfoID, admDate, bed, bodyTemp,bpm, sato2, bloodPress, timestamp} = response.data;
+      var response_clinicalInfo;
+      let newClinicalInfoResponse = await ClinicalInfoController.newClinicalInfo(clinicalInfoID, admDate, bed, bodyTemp,bpm, sato2, bloodPress, timestamp)
+      if (newClinicalInfoResponse.success){
+          response_clinicalInfo = "Novos Dados Clincos adicionados com sucesso"
+      } else {
+          response_clinicalInfo = "Erro ao adicionar novos dados clinicos"
+      }
+      res.status(200).json({
+        "Paciente":response_patient,
+        "Sensor":response_sensor,
+        "Caretaker":response_caretaker,
+        "Clinical Info":response_clinicalInfo,
+        "Service":response_service,
+    });
   })
   .catch(err => {
       console.log(err)
@@ -33,40 +79,5 @@ router.get("/acedehpeixoto/:id", (req, res) => {
   })
 })
 
-const {patientid, patientname, patientage} = response.data;
-      let newPatientResponse = await PatientSchema.newPatient(patientid, patientname, patientage)
-      if (newPatientResponse.success){
-          res.status(200).json({info:"Novo paciente adicionado com sucesso"})
-      } else {
-          res.status(200).json({info:"Erro ao adicionar novo paciente"})
-      }
-      res.json(response.data);
-      
-const {serviceCod, serviceDesc} = response.data;
-      let newServiceResponse = await ServiceSchema.newService(serviceCod, serviceDesc)
-      if (newServiceResponse.success){
-          res.status(200).json({info:"Novo servico adicionado com sucesso"})
-      } else {
-          res.status(200).json({info:"Erro ao adicionar novo serviço"})
-      }
-      res.json(response.data);
-
-const {caretakerid, caretakername} = response.data;
-      let newCaretakerResponse = await CaretakerSchema.newCaretaker(caretakerid, caretakername)
-      if (newCaretakerResponse.success){
-          res.status(200).json({info:"Novo caretaker adicionado com sucesso"})
-      } else {
-          res.status(200).json({info:"Erro ao adicionar novo caretaker"})
-      }
-      res.json(response.data);
-
-const {clinicalInfoID, admDate, bed, bodyTemp,bpm, sato2, bloodPress} = response.data;
-      let newClinicalInfoResponse = await ClinicalInfoSchema.newClinicalInfo(clinicalInfoID, admDate, bed, bodyTemp,bpm, sato2, bloodPress.systolic, bloodPress.diastolic)
-      if (newClinicalInfoResponse.success){
-          res.status(200).json({info:"Novos Dados Clincos adicionados com sucesso"})
-      } else {
-          res.status(200).json({info:"Erro ao adicionar novos dados clinicos"})
-      }
-      res.json(response.data);
 
 module.exports = router;
