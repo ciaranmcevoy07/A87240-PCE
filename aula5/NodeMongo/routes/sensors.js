@@ -49,7 +49,8 @@ router.get("/list/:id", (req,res) =>{
 })
 
 router.delete("delete/:id", (req,res) =>{
-    let SensorRemove = SensorController.deleteOne({sensorid:req.params.id}, (err))
+    const { sensorid, sensornum, type_of_sensor} = req.body;
+    let SensorRemove = SensorController.SensorRemove(sensorid, sensornum, type_of_sensor)
     if (SensorRemove.success){
         res.status(200).json({info:"Sensor removido com sucesso"})
     } else {
